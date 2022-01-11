@@ -1,0 +1,151 @@
+---
+title: 'Multivariate fundamentals: Rotation (PCA)'
+author: "Ronny A. Hernández Mora"
+date: "11/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(janitor)
+library(readr)
+library(lattice)
+
+options(scipen = 99)
+```
+
+This is the lab 2 in the course renv 690 at the University of Alberta.
+
+Videos for this lab are:
+
+ - [Rotation, PCA](https://www.youtube.com/watch?v=LN2guRwT75k)
+ - [PCA continued, matrix rotation](https://www.youtube.com/watch?v=GkHIV4mQcTs)
+
+## Matrix rotation in R
+
+We are going to create a matrix with 3 variables and 10 rows with 0's and 1's
+values only:
+```{r matrix}
+data_points <- as.vector(sample(x = c(0, 1), size = 30, replace = TRUE))
+
+dataset <- matrix(data_points, nrow = 10, ncol = 3)
+```
+
+Now, we are going to create a rotation matrix. First we need to create a formula
+to transform degrees to radians. Then, we are going to use this value to
+generate a rotation matrix:
+```{r rotation_matrix}
+# Degrees to radians
+deg_to_rad <- function(deg) {
+ (deg * pi) / (180)
+}
+
+# Transform 30 degrees to radians
+f2 <- deg_to_rad(30)
+
+# Create the rotation matrix
+## Rotation around z-axis
+rotation_matrix <- matrix(c(cos(f2), sin(f2), 0, 
+                            -sin(f2), cos(f2), 0,
+                            0, 0, 1 ),
+                          nrow = 3, ncol = 3)
+```
+
+Finally, we are going to show how this matrix can look like in a plot with the
+original data points and the rotated data points:
+```{r}
+rotation <- as.matrix(dataset) %*% as.matrix(rotation_matrix)
+
+plot(dataset[ , 1], dataset[ , 2], xlim = c(-0.5, 1.5), 
+     ylim = c(-0.5, 1.5), col = "blue")
+
+points(rotation[ , 1], rotation[ , 2], col = "red")
+```
+
+## Principal component analysis
+
+For this example, we are going to use the dataset `USArrests`
+```{r}
+arrests <- USArrests %>% 
+  clean_names()
+  
+glimpse(arrests)
+```
+
+Now, we can run a PCA on this dataset
+```{r}
+arrests_pca <- princomp(arrests, cor = T)
+```
+
+We have created an object with the results from the PCA. Let's check the ouputs
+from the model:
+```{r}
+arrests_pca$loadings
+arrests_pca$score
+summary(arrests_pca)
+eigen(cor(arrests))
+eigen(cor(arrests))$values/4
+```
+
+Finally we can create a biplot of our model:
+```{r}
+biplot(arrests_pca, choices = c(1, 2))
+```
+
+## PCA for spatial dataset
+
+### Read the data
+
+```{r}
+alberta_climate <- read_csv("data/lab_2/ab_climate.csv") %>% 
+  clean_names() %>% 
+  mutate(ecosys = as.factor(ecosys))
+
+glimpse(alberta_climate)
+```
+
+### Plot the data
+
+```{r}
+temp_colors <- colorRampPalette(c("blue", "lightblue", "yellow", "red"))(100)
+
+levelplot(mat ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99, col.regions = temp_colors)
+
+p_colors = colorRampPalette(c("brown", "yellow", 
+                          "darkgreen", "darkblue"))(100)
+
+levelplot(log(map) ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99, 
+          col.regions = p_colors)
+
+# Try with ggplot
+ggplot(data = alberta_climate, aes(x = x, y = y, fill = log(map))) +
+  geom_tile() +
+  scale_fill_viridis_c()
+
+
+levelplot(ecosys ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 20,
+          col.regions = rainbow(21))
+
+# Try with ggplot
+ggplot(data = alberta_climate, aes(x = x, y = y, fill = ecosys)) +
+  geom_tile() +
+  scale_fill_viridis_d()
+```
+
+### Perform a PCA
+
+```{r}
+
+```
+
+
+
