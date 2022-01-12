@@ -167,13 +167,13 @@ help from the `vegan` package functions
 # This is with all the variables used to create the PCA
 alberta_pca_fit <-  envfit(alberta_pca$score[ , 1:2],
                          alberta_climate[ , 6:18], permutations = 0)
-
+plot.new()
 plot(alberta_pca_fit, col = "black")
 
 # This is selecting just 3 variables
 alberta_pca_fit <-  envfit(alberta_pca$score[ , 1:2],
                          alberta_climate[ , c(7, 9, 18)], permutations = 0)
-
+plot.new()
 plot(alberta_pca_fit)
 
 # Now plot this with the map
@@ -196,7 +196,6 @@ levelplot(log(alberta_pca$score[, 3] + 3) ~ x * y,
           aspect = "iso", cuts = 99,
           col.regions = pccol)
 ```
-
 
 ## PCA with tidymodels
 
