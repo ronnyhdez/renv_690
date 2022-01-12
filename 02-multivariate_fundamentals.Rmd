@@ -13,7 +13,11 @@ library(readxl)
 library(janitor)
 library(readr)
 library(lattice)
+library(vegan)
+library(forcats)
+library(tidymodels)
 
+# Options
 options(scipen = 99)
 ```
 
@@ -144,8 +148,94 @@ ggplot(data = alberta_climate, aes(x = x, y = y, fill = ecosys)) +
 ### Perform a PCA
 
 ```{r}
+alberta_pca <- alberta_climate %>% 
+  select(-id, -x, -y, -elevation, -ecosys) %>% 
+  princomp(cor = TRUE)
 
+# Plots with lab_2 original code
+plot(alberta_pca$score[, 1:2], cex = 0.3, asp = 1, 
+     col = rainbow(21)[alberta_climate$ecosys])
+
+legend(9 ~ -12.5, cex = 0.8, bty = "n", pch = c(16),
+       col = rainbow(21), legend = sort(unique(alberta_climate$ecosys)))
 ```
+
+Now that we have the plot, we are missing the labels, so we can add them with
+help from the `vegan` package functions
+
+```{r}
+# This is with all the variables used to create the PCA
+alberta_pca_fit <-  envfit(alberta_pca$score[ , 1:2],
+                         alberta_climate[ , 6:18], permutations = 0)
+
+plot(alberta_pca_fit, col = "black")
+
+# This is selecting just 3 variables
+alberta_pca_fit <-  envfit(alberta_pca$score[ , 1:2],
+                         alberta_climate[ , c(7, 9, 18)], permutations = 0)
+
+plot(alberta_pca_fit)
+
+# Now plot this with the map
+alberta_pca$loadings[,1:3]
+
+pccol <- colorRampPalette(c("green", "yellow", "red"))(100)
+
+levelplot(alberta_pca$score[, 1] ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99,
+          col.regions = pccol)
+
+levelplot(alberta_pca$score[, 2] ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99,
+          col.regions = pccol)
+
+levelplot(log(alberta_pca$score[, 3] + 3) ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99,
+          col.regions = pccol)
+```
+
+
+## PCA with tidymodels
+
+That's a way to do it, but nowadays we can perform the same exact process with
+tools like `tidymodels`
+
+```{r}
+library(tidymodels)
+# Create recipe indicating the role of variables that are there to identify 
+# data points:
+alberta_recipe <- recipe(~ ., data = alberta_climate) %>% 
+  update_role(id, x, y, elevation, ecosys,
+              new_role = "id") %>% 
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors())
+
+# Up to this point we just created the recipe. Nothing was executed by R. So the
+# next step is to run the recipe
+alberta_preparation <- prep(alberta_recipe)
+
+# Now, we can extract all the results in a tidy format
+alberta_pca_tidy <- tidy(alberta_preparation, 2)
+
+# Let's check the variable importance for each of the components:
+alberta_pca_tidy %>% 
+  filter(component %in% paste0("PC", 1:3)) %>% 
+  mutate(component = fct_inorder(component)) %>% 
+  ggplot(aes(value, terms, fill = terms)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap( ~ component, nrow = 1) +
+  labs(y ~ NULL)
+
+# We can try to plot the datapoints with the components
+bake(alberta_preparation, new_data = NULL) %>% 
+  ggplot(aes(PC1, PC2)) +
+  geom_point(aes(color = ecosys), alpha = 0.7, size = 2) +
+  scale_color_viridis_d()
+```
+
 
 
 
