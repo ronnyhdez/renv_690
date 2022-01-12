@@ -106,6 +106,9 @@ biplot(arrests_pca, choices = c(1, 2))
 
 ## PCA for spatial dataset
 
+This is a spatial, multivariate dataset of climate in Alberta, Canada.
+
+
 ### Read the data
 
 ```{r}
