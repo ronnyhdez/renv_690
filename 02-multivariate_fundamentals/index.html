@@ -1,0 +1,1019 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <meta name="author" content="Ronny A. Hernandez Mora">
+      
+      
+        <link rel="canonical" href="https://ronnyhdez.github.io/renv_690/02-multivariate_fundamentals/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+    
+    
+      
+        <title>02 multivariate fundamentals - drawer</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.802231af.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#matrix-rotation-in-r" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="drawer" class="md-header__button md-logo" aria-label="drawer" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            drawer
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              02 multivariate fundamentals
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="drawer" class="md-nav__button md-logo" aria-label="drawer" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    drawer
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          02 multivariate fundamentals
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        02 multivariate fundamentals
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#matrix-rotation-in-r" class="md-nav__link">
+    Matrix rotation in R
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#principal-component-analysis" class="md-nav__link">
+    Principal component analysis
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pca-for-spatial-dataset" class="md-nav__link">
+    PCA for spatial dataset
+  </a>
+  
+    <nav class="md-nav" aria-label="PCA for spatial dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-the-data" class="md-nav__link">
+    Read the data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plot-the-data" class="md-nav__link">
+    Plot the data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#perform-a-pca" class="md-nav__link">
+    Perform a PCA
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pca-with-tidymodels" class="md-nav__link">
+    PCA with tidymodels
+  </a>
+  
+    <nav class="md-nav" aria-label="PCA with tidymodels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-test-and-training-data" class="md-nav__link">
+    Creating test and training data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploring-the-data" class="md-nav__link">
+    Exploring the data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-recipe" class="md-nav__link">
+    Creating recipe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estimate-model-with-the-training-data" class="md-nav__link">
+    Estimate model with the training data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baking-the-recipe" class="md-nav__link">
+    Baking the recipe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-extraction-techniques" class="md-nav__link">
+    Feature extraction techniques
+  </a>
+  
+    <nav class="md-nav" aria-label="Feature extraction techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pca-with-tidymodels-without-the-split" class="md-nav__link">
+    PCA with tidymodels without the split
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pca_tidymodels_summary/" class="md-nav__link">
+        Pca tidymodels summary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#matrix-rotation-in-r" class="md-nav__link">
+    Matrix rotation in R
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#principal-component-analysis" class="md-nav__link">
+    Principal component analysis
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pca-for-spatial-dataset" class="md-nav__link">
+    PCA for spatial dataset
+  </a>
+  
+    <nav class="md-nav" aria-label="PCA for spatial dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-the-data" class="md-nav__link">
+    Read the data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plot-the-data" class="md-nav__link">
+    Plot the data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#perform-a-pca" class="md-nav__link">
+    Perform a PCA
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pca-with-tidymodels" class="md-nav__link">
+    PCA with tidymodels
+  </a>
+  
+    <nav class="md-nav" aria-label="PCA with tidymodels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-test-and-training-data" class="md-nav__link">
+    Creating test and training data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploring-the-data" class="md-nav__link">
+    Exploring the data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-recipe" class="md-nav__link">
+    Creating recipe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estimate-model-with-the-training-data" class="md-nav__link">
+    Estimate model with the training data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#baking-the-recipe" class="md-nav__link">
+    Baking the recipe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-extraction-techniques" class="md-nav__link">
+    Feature extraction techniques
+  </a>
+  
+    <nav class="md-nav" aria-label="Feature extraction techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pca-with-tidymodels-without-the-split" class="md-nav__link">
+    PCA with tidymodels without the split
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>02 multivariate fundamentals</h1>
+                
+                <p>This is the lab 2 in the course renv 690 at the University of Alberta.</p>
+<p>Videos for this lab are:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=LN2guRwT75k">Rotation, PCA</a></li>
+<li><a href="https://www.youtube.com/watch?v=GkHIV4mQcTs">PCA continued, matrix
+    rotation</a></li>
+</ul>
+<h2 id="matrix-rotation-in-r">Matrix rotation in R</h2>
+<p>We are going to create a matrix with 3 variables and 10 rows with 0’s
+and 1’s values only:</p>
+<pre><code>data_points &lt;- as.vector(sample(x = c(0, 1), size = 30, replace = TRUE))
+
+dataset &lt;- matrix(data_points, nrow = 10, ncol = 3)
+</code></pre>
+<p>Now, we are going to create a rotation matrix. First we need to create a
+formula to transform degrees to radians. Then, we are going to use this
+value to generate a rotation matrix:</p>
+<pre><code># Degrees to radians
+deg_to_rad &lt;- function(deg) {
+ (deg * pi) / (180)
+}
+
+# Transform 30 degrees to radians
+f2 &lt;- deg_to_rad(30)
+
+# Create the rotation matrix
+## Rotation around z-axis
+rotation_matrix &lt;- matrix(c(cos(f2), sin(f2), 0, 
+                            -sin(f2), cos(f2), 0,
+                            0, 0, 1 ),
+                          nrow = 3, ncol = 3)
+</code></pre>
+<p>Finally, we are going to show how this matrix can look like in a plot
+with the original data points and the rotated data points:</p>
+<pre><code>rotation &lt;- as.matrix(dataset) %*% as.matrix(rotation_matrix)
+
+plot(dataset[ , 1], dataset[ , 2], xlim = c(-0.5, 1.5), 
+     ylim = c(-0.5, 1.5), col = "blue")
+
+points(rotation[ , 1], rotation[ , 2], col = "red")
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-1-1.png" /></p>
+<h2 id="principal-component-analysis">Principal component analysis</h2>
+<p>For this example, we are going to use the dataset <code>USArrests</code></p>
+<pre><code>arrests &lt;- USArrests %&gt;% 
+  clean_names()
+
+glimpse(arrests)
+
+## Rows: 50
+## Columns: 4
+## $ murder    [3m[38;5;246m&lt;dbl&gt;[39m[23m 13.2, 10.0, 8.1, 8.8, 9.0, 7.9, 3.3, 5.9, 15.4…
+## $ assault   [3m[38;5;246m&lt;int&gt;[39m[23m 236, 263, 294, 190, 276, 204, 110, 238, 335, 2…
+## $ urban_pop [3m[38;5;246m&lt;int&gt;[39m[23m 58, 48, 80, 50, 91, 78, 77, 72, 80, 60, 83, 54…
+## $ rape      [3m[38;5;246m&lt;dbl&gt;[39m[23m 21.2, 44.5, 31.0, 19.5, 40.6, 38.7, 11.1, 15.8…
+</code></pre>
+<p>Now, we can run a PCA on this dataset</p>
+<pre><code>arrests_pca &lt;- princomp(arrests, cor = T)
+</code></pre>
+<p>We have created an object with the results from the PCA. Let’s check the
+ouputs from the model:</p>
+<pre><code>arrests_pca$loadings
+
+## 
+## Loadings:
+##           Comp.1 Comp.2 Comp.3 Comp.4
+## murder     0.536  0.418  0.341  0.649
+## assault    0.583  0.188  0.268 -0.743
+## urban_pop  0.278 -0.873  0.378  0.134
+## rape       0.543 -0.167 -0.818       
+## 
+##                Comp.1 Comp.2 Comp.3 Comp.4
+## SS loadings      1.00   1.00   1.00   1.00
+## Proportion Var   0.25   0.25   0.25   0.25
+## Cumulative Var   0.25   0.50   0.75   1.00
+
+arrests_pca$score
+
+##                     Comp.1      Comp.2      Comp.3       Comp.4
+## Alabama         0.98556588  1.13339238  0.44426879  0.156267145
+## Alaska          1.95013775  1.07321326 -2.04000333 -0.438583440
+## Arizona         1.76316354 -0.74595678 -0.05478082 -0.834652924
+## Arkansas       -0.14142029  1.11979678 -0.11457369 -0.182810896
+## California      2.52398013 -1.54293399 -0.59855680 -0.341996478
+## Colorado        1.51456286 -0.98755509 -1.09500699  0.001464887
+## Connecticut    -1.35864746 -1.08892789  0.64325757 -0.118469414
+## Delaware        0.04770931 -0.32535892  0.71863294 -0.881977637
+## Florida         3.01304227  0.03922851  0.57682949 -0.096284752
+## Georgia         1.63928304  1.27894240  0.34246008  1.076796812
+## Hawaii         -0.91265715 -1.57046001 -0.05078189  0.902806864
+## Idaho          -1.63979985  0.21097292 -0.25980134 -0.499104101
+## Illinois        1.37891072 -0.68184119  0.67749564 -0.122021292
+## Indiana        -0.50546136 -0.15156254 -0.22805484  0.424665700
+## Iowa           -2.25364607 -0.10405407 -0.16456432  0.017555916
+## Kansas         -0.79688112 -0.27016470 -0.02555331  0.206496428
+## Kentucky       -0.75085907  0.95844029  0.02836942  0.670556671
+## Louisiana       1.56481798  0.87105466  0.78348036  0.454728038
+## Maine          -2.39682949  0.37639158  0.06568239 -0.330459817
+## Maryland        1.76336939  0.42765519  0.15725013 -0.559069521
+## Massachusetts  -0.48616629 -1.47449650  0.60949748 -0.179598963
+## Michigan        2.10844115 -0.15539682 -0.38486858  0.102372019
+## Minnesota      -1.69268181 -0.63226125 -0.15307043  0.067316885
+## Mississippi     0.99649446  2.39379599  0.74080840  0.215508013
+## Missouri        0.69678733 -0.26335479 -0.37744383  0.225824461
+## Montana        -1.18545191  0.53687437 -0.24688932  0.123742227
+## Nebraska       -1.26563654 -0.19395373 -0.17557391  0.015892888
+## Nevada          2.87439454 -0.77560020 -1.16338049  0.314515476
+## New Hampshire  -2.38391541 -0.01808229 -0.03685539 -0.033137338
+## New Jersey      0.18156611 -1.44950571  0.76445355  0.243382700
+## New Mexico      1.98002375  0.14284878 -0.18369218 -0.339533597
+## New York        1.68257738 -0.82318414  0.64307509 -0.013484369
+## North Carolina  1.12337861  2.22800338  0.86357179 -0.954381667
+## North Dakota   -2.99222562  0.59911882 -0.30127728 -0.253987327
+## Ohio           -0.22596542 -0.74223824  0.03113912  0.473915911
+## Oklahoma       -0.31178286 -0.28785421  0.01530979  0.010332321
+## Oregon          0.05912208 -0.54141145 -0.93983298 -0.237780688
+## Pennsylvania   -0.88841582 -0.57110035  0.40062871  0.359061124
+## Rhode Island   -0.86377206 -1.49197842  1.36994570 -0.613569430
+## South Carolina  1.32072380  1.93340466  0.30053779 -0.131466685
+## South Dakota   -1.98777484  0.82334324 -0.38929333 -0.109571764
+## Tennessee       0.99974168  0.86025130 -0.18808295  0.652864291
+## Texas           1.35513821 -0.41248082  0.49206886  0.643195491
+## Utah           -0.55056526 -1.47150461 -0.29372804 -0.082314047
+## Vermont        -2.80141174  1.40228806 -0.84126309 -0.144889914
+## Virginia       -0.09633491  0.19973529 -0.01171254  0.211370813
+## Washington     -0.21690338 -0.97012418 -0.62487094 -0.220847793
+## West Virginia  -2.10858541  1.42484670 -0.10477467  0.131908831
+## Wisconsin      -2.07971417 -0.61126862  0.13886500  0.184103743
+## Wyoming        -0.62942666  0.32101297  0.24065923 -0.166651801
+
+summary(arrests_pca)
+
+## Importance of components:
+##                           Comp.1    Comp.2    Comp.3     Comp.4
+## Standard deviation     1.5748783 0.9948694 0.5971291 0.41644938
+## Proportion of Variance 0.6200604 0.2474413 0.0891408 0.04335752
+## Cumulative Proportion  0.6200604 0.8675017 0.9566425 1.00000000
+
+eigen(cor(arrests))
+
+## eigen() decomposition
+## $values
+## [1] 2.4802416 0.9897652 0.3565632 0.1734301
+## 
+## $vectors
+##            [,1]       [,2]       [,3]        [,4]
+## [1,] -0.5358995  0.4181809 -0.3412327  0.64922780
+## [2,] -0.5831836  0.1879856 -0.2681484 -0.74340748
+## [3,] -0.2781909 -0.8728062 -0.3780158  0.13387773
+## [4,] -0.5434321 -0.1673186  0.8177779  0.08902432
+
+eigen(cor(arrests))$values/4
+
+## [1] 0.62006039 0.24744129 0.08914080 0.04335752
+</code></pre>
+<p>Finally we can create a biplot of our model:</p>
+<pre><code>biplot(arrests_pca, choices = c(1, 2))
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-5-1.png" /></p>
+<h2 id="pca-for-spatial-dataset">PCA for spatial dataset</h2>
+<h3 id="read-the-data">Read the data</h3>
+<pre><code>alberta_climate &lt;- read_csv("data/lab_2/ab_climate.csv") %&gt;% 
+  clean_names() %&gt;% 
+  mutate(ecosys = as.factor(ecosys))
+
+## Rows: 40229 Columns: 18
+
+## ── Column specification ──────────────────────────────────────────
+## Delimiter: ","
+## chr  (1): ECOSYS
+## dbl (17): ID, X, Y, ELEVATION, MAT, MWMT, MCMT, TD, MAP, MSP, ...
+
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+glimpse(alberta_climate)
+
+## Rows: 40,229
+## Columns: 18
+## $ id        [3m[38;5;246m&lt;dbl&gt;[39m[23m 4957, 4961, 4965, 4969, 4973, 4977, 4981, 4985…
+## $ x         [3m[38;5;246m&lt;dbl&gt;[39m[23m 224500, 228500, 232500, 236500, 240500, 244500…
+## $ y         [3m[38;5;246m&lt;dbl&gt;[39m[23m 6655500, 6655500, 6655500, 6655500, 6655500, 6…
+## $ elevation [3m[38;5;246m&lt;dbl&gt;[39m[23m 334, 354, 377, 417, 458, 433, 454, 502, 544, 5…
+## $ ecosys    [3m[38;5;246m&lt;fct&gt;[39m[23m NM, NM, NM, NM, NM, NM, NM, NM, NM, NM, NM, NM…
+## $ mat       [3m[38;5;246m&lt;dbl&gt;[39m[23m -2.6, -2.6, -2.7, -2.7, -2.8, -2.9, -2.9, -3.1…
+## $ mwmt      [3m[38;5;246m&lt;dbl&gt;[39m[23m 16.0, 15.9, 15.8, 15.6, 15.4, 15.5, 15.4, 15.2…
+## $ mcmt      [3m[38;5;246m&lt;dbl&gt;[39m[23m -24.2, -24.2, -24.1, -24.0, -23.8, -24.2, -24.…
+## $ td        [3m[38;5;246m&lt;dbl&gt;[39m[23m 40.2, 40.1, 39.9, 39.6, 39.2, 39.7, 39.4, 39.2…
+## $ map       [3m[38;5;246m&lt;dbl&gt;[39m[23m 402, 405, 410, 415, 422, 420, 420, 434, 443, 4…
+## $ msp       [3m[38;5;246m&lt;dbl&gt;[39m[23m 246, 248, 249, 251, 254, 252, 251, 257, 262, 2…
+## $ ahm       [3m[38;5;246m&lt;dbl&gt;[39m[23m 18.5, 18.3, 17.9, 17.5, 17.0, 17.0, 17.0, 16.0…
+## $ shm       [3m[38;5;246m&lt;dbl&gt;[39m[23m 65.0, 64.1, 63.6, 62.1, 60.6, 61.5, 61.3, 59.0…
+## $ dd0       [3m[38;5;246m&lt;dbl&gt;[39m[23m 3073, 3075, 3077, 3082, 3078, 3116, 3105, 3138…
+## $ dd5       [3m[38;5;246m&lt;dbl&gt;[39m[23m 1194, 1180, 1161, 1132, 1099, 1118, 1100, 1064…
+## $ nffd      [3m[38;5;246m&lt;dbl&gt;[39m[23m 139, 139, 139, 139, 138, 138, 138, 137, 137, 1…
+## $ ffp       [3m[38;5;246m&lt;dbl&gt;[39m[23m 81, 81, 80, 80, 79, 80, 79, 79, 77, 77, 76, 76…
+## $ pas       [3m[38;5;246m&lt;dbl&gt;[39m[23m 150, 151, 155, 158, 163, 162, 163, 171, 176, 1…
+</code></pre>
+<h3 id="plot-the-data">Plot the data</h3>
+<pre><code>temp_colors &lt;- colorRampPalette(c("blue", "lightblue", "yellow", "red"))(100)
+
+levelplot(mat ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99, col.regions = temp_colors)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-7-1.png" /></p>
+<pre><code>p_colors = colorRampPalette(c("brown", "yellow", 
+                          "darkgreen", "darkblue"))(100)
+
+levelplot(log(map) ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99, 
+          col.regions = p_colors)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-7-2.png" /></p>
+<pre><code># Try with ggplot
+ggplot(data = alberta_climate, aes(x = x, y = y, fill = log(map))) +
+  geom_tile() +
+  scale_fill_viridis_c()
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-7-3.png" /></p>
+<pre><code>levelplot(ecosys ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 20,
+          col.regions = rainbow(21))
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-7-4.png" /></p>
+<pre><code># Try with ggplot
+ggplot(data = alberta_climate, aes(x = x, y = y, fill = ecosys)) +
+  geom_tile() +
+  scale_fill_viridis_d()
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-7-5.png" /></p>
+<h3 id="perform-a-pca">Perform a PCA</h3>
+<pre><code>alberta_pca &lt;- alberta_climate %&gt;% 
+  select(-id, -x, -y, -elevation, -ecosys) %&gt;% 
+  princomp(cor = TRUE)
+
+# Plots with lab_2 original code
+plot(alberta_pca$score[, 1:2], cex = 0.3, asp = 1, 
+     col = rainbow(21)[alberta_climate$ecosys])
+
+legend(9 ~ -12.5, cex = 0.8, bty = "n", pch = c(16),
+       col = rainbow(21), legend = sort(unique(alberta_climate$ecosys)))
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-8-1.png" /></p>
+<p>Now that we have the plot, we are missing the labels, so we can add them
+with help from the <code>vegan</code> package functions</p>
+<pre><code># This is with all the variables used to create the PCA
+alberta_pca_fit &lt;-  envfit(alberta_pca$score[ , 1:2],
+                         alberta_climate[ , 6:18], permutations = 0)
+plot.new()
+plot(alberta_pca_fit, col = "black")
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-9-1.png" /></p>
+<pre><code># This is selecting just 3 variables
+alberta_pca_fit &lt;-  envfit(alberta_pca$score[ , 1:2],
+                         alberta_climate[ , c(7, 9, 18)], permutations = 0)
+plot.new()
+plot(alberta_pca_fit)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-9-2.png" /></p>
+<pre><code># Now plot this with the map
+alberta_pca$loadings[,1:3]
+
+##           Comp.1      Comp.2      Comp.3
+## mat   0.21210671  0.39145994  0.06792576
+## mwmt  0.36495614 -0.08275149 -0.06940002
+## mcmt  0.05824430  0.46271104  0.17333034
+## td    0.05842535 -0.46062662 -0.18440228
+## map  -0.30665384  0.23732282 -0.14770200
+## msp  -0.24004368  0.27607364 -0.47237020
+## ahm   0.34256560  0.13247143  0.28589935
+## shm   0.30488045 -0.19434047  0.38961587
+## dd0  -0.09947894 -0.45405333 -0.13896027
+## dd5   0.37166314  0.03706038 -0.07360775
+## nffd  0.32318246  0.12648793 -0.37484355
+## ffp   0.32168430  0.03329113 -0.46840749
+## pas  -0.31159874  0.03364299  0.25177840
+
+pccol &lt;- colorRampPalette(c("green", "yellow", "red"))(100)
+
+levelplot(alberta_pca$score[, 1] ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99,
+          col.regions = pccol)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-9-3.png" /></p>
+<pre><code>levelplot(alberta_pca$score[, 2] ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99,
+          col.regions = pccol)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-9-4.png" /></p>
+<pre><code>levelplot(log(alberta_pca$score[, 3] + 3) ~ x * y,
+          data = alberta_climate,
+          aspect = "iso", cuts = 99,
+          col.regions = pccol)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-9-5.png" /></p>
+<h2 id="pca-with-tidymodels">PCA with tidymodels</h2>
+<p>That’s a way to do it, but nowadays we can perform the same exact
+process with tools like <code>tidymodels</code></p>
+<h3 id="creating-test-and-training-data">Creating test and training data</h3>
+<pre><code>set.seed(1701)
+alberta_split &lt;- alberta_climate %&gt;% 
+  select(-id, -x, -y, -elevation) %&gt;% 
+  initial_split(strata = ecosys, prop = 3/4)
+
+alberta_train &lt;- training(alberta_split)
+alberta_test  &lt;- testing(alberta_split)
+
+set.seed(1702)
+alberta_val &lt;- validation_split(alberta_train, strata = ecosys, prop = 4/5)
+alberta_val$splits[[1]]
+
+## &lt;Training/Validation/Total&gt;
+## &lt;24136/6035/30171&gt;
+</code></pre>
+<h2 id="exploring-the-data">Exploring the data</h2>
+<p>Let’s check the correlation between the variables</p>
+<pre><code>tmwr_cols &lt;- colorRampPalette(c("#91CBD765", "#CA225E"))
+alberta_train %&gt;% 
+  select(-ecosys) %&gt;% 
+  cor() %&gt;% 
+  corrplot(col = tmwr_cols(200), tl.col = "black")
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-11-1.png" /></p>
+<p>Do we have missing values?</p>
+<pre><code>vis_dat(alberta_train)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-12-1.png" /></p>
+<h2 id="creating-recipe">Creating recipe</h2>
+<p>This dataset contains predictors that are ratios. Given the nature of
+this variable, the distribution can be skewed and wreak the havoc on
+variance calculations. That’s why is better to normalize (enforce a
+symmetric distribution) for the predictors</p>
+<pre><code>alberta_recipe &lt;- recipe(ecosys ~ ., 
+                         data = analysis(alberta_val$splits[[1]])) %&gt;% 
+  update_role(ecosys,
+              new_role = "id") %&gt;% 
+  step_zv(all_numeric_predictors()) %&gt;%
+  step_orderNorm(all_numeric_predictors()) %&gt;% 
+  step_normalize(all_predictors())
+</code></pre>
+<h2 id="estimate-model-with-the-training-data">Estimate model with the training data</h2>
+<pre><code>alberta_rec_trained &lt;- prep(alberta_recipe)
+alberta_rec_trained
+
+## Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##         id          1
+##  predictor         13
+## 
+## Training data contained 24136 data points and no missing data.
+## 
+## Operations:
+## 
+## Zero variance filter removed no terms [trained]
+## orderNorm transformation on mat, mwmt, mcmt, td, map, ms... [trained]
+## Centering and scaling for mat, mwmt, mcmt, td, map, msp, ah... [trained]
+</code></pre>
+<p>If we are facing errors we can use:</p>
+<ul>
+<li><code>prep(verbose = TRUE)</code> this will show the errors in every step</li>
+<li><code>prep(log_changes = TRUE)</code> will keep the logs for every step</li>
+</ul>
+<h2 id="baking-the-recipe">Baking the recipe</h2>
+<p><code>bake()</code> is like <code>predict()</code>, so at this point we have just fit our
+model, now we need to predict.</p>
+<pre><code>alberta_validation &lt;- alberta_val$splits %&gt;% 
+  pluck(1) %&gt;% 
+  assessment()
+
+alberta_val_processed &lt;- bake(alberta_rec_trained,
+                              new_data = alberta_validation)
+</code></pre>
+<h2 id="feature-extraction-techniques">Feature extraction techniques</h2>
+<p>We are going to create a function to plot the data in a scatter plot.
+After running the PCA, we will use this function.</p>
+<pre><code>plot_validation_results &lt;- function(recipe, 
+                                    dat = assessment(alberta_val$splits[[1]])) {
+  recipe %&gt;%
+    # Estimate any additional steps
+    prep() %&gt;%
+    # Process the data (the validation set by default)
+    bake(new_data = dat) %&gt;%
+    # Create the scatterplot matrix
+    ggplot(aes(x = .panel_x, y = .panel_y, col = ecosys, fill = ecosys)) +
+    geom_point(alpha = 0.4, size = 0.5) +
+    geom_autodensity(alpha = .3) +
+    facet_matrix(vars(-ecosys), layer.diag = 2) + 
+    scale_color_viridis_d() + 
+    scale_fill_viridis_d()
+}
+</code></pre>
+<p>Now, we are going to add one more step to our recipe to check the
+variation of our variables and visualize it with our function:</p>
+<pre><code>alberta_rec_trained %&gt;%
+  step_pca(all_numeric_predictors(), num_comp = 4) %&gt;%
+  plot_validation_results() + 
+  ggtitle("Principal Component Analysis")
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-17-1.png" /></p>
+<p>We can observe that the first two principal components are good
+separating the classes.</p>
+<p>Now, the PCA components of our data that explain most of the variation
+in the predictors are also the predictive of the classes. To get to know
+what features are driving each of the components we can do the
+following:</p>
+<pre><code>alberta_rec_trained %&gt;%
+  step_pca(all_numeric_predictors(), num_comp = 4) %&gt;% 
+  prep() %&gt;% 
+  plot_top_loadings(component_number &lt;= 4, n = 5) + 
+  ggtitle("Principal Component Analysis")
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-18-1.png" /></p>
+<h3 id="pca-with-tidymodels-without-the-split">PCA with tidymodels without the split</h3>
+<pre><code># Create recipe indicating the role of variables that are there to identify 
+# data points:
+alberta_recipe &lt;- recipe(~ ., data = alberta_climate) %&gt;% 
+  update_role(id, x, y, elevation, ecosys,
+              new_role = "id") %&gt;% 
+  step_normalize(all_predictors()) %&gt;%
+  step_pca(all_predictors())
+
+# Up to this point we just created the recipe. Nothing was executed by R. So the
+# next step is to run the recipe
+alberta_preparation &lt;- prep(alberta_recipe)
+
+# Now, we can extract all the results in a tidy format
+alberta_pca_tidy &lt;- tidy(alberta_preparation, 2)
+
+# Let's check the variable importance for each of the components:
+alberta_pca_tidy %&gt;% 
+  filter(component %in% paste0("PC", 1:3)) %&gt;% 
+  mutate(component = fct_inorder(component)) %&gt;% 
+  ggplot(aes(value, terms, fill = terms)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap( ~ component, nrow = 1) +
+  labs(y ~ NULL)
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-19-1.png" /></p>
+<pre><code># We can try to plot the datapoints with the components
+bake(alberta_preparation, new_data = NULL) %&gt;% 
+  ggplot(aes(PC1, PC2)) +
+  geom_point(aes(color = ecosys), alpha = 0.7, size = 2) +
+  scale_color_viridis_d()
+</code></pre>
+<p><img alt="" src="../02-multivariate_fundamentals_files/figure-markdown_strict/unnamed-chunk-19-2.png" /></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+      
+        
+        <a href="../pca_tidymodels_summary/" class="md-footer__link md-footer__link--next" aria-label="Next: Pca tidymodels summary" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Pca tidymodels summary
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.756773cc.min.js"></script>
+      
+    
+  </body>
+</html>
