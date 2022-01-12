@@ -1,0 +1,8 @@
+site_name: drawer
+site_author: Ronny A. Hernandez Mora
+site_url: https://ronnyhdez.github.io/renv_690/
+theme:
+   name: material
+markdown_extensions:
+   - toc:
+      permalink: []
