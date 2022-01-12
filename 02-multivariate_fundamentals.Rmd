@@ -16,6 +16,11 @@ library(lattice)
 library(vegan)
 library(forcats)
 library(tidymodels)
+library(corrplot)
+library(visdat)
+library(learntidymodels)
+library(bestNormalize)
+library(ggforce)
 
 # Options
 options(scipen = 99)
@@ -202,8 +207,129 @@ levelplot(log(alberta_pca$score[, 3] + 3) ~ x * y,
 That's a way to do it, but nowadays we can perform the same exact process with
 tools like `tidymodels`
 
+### Creating test and training data
+
 ```{r}
-library(tidymodels)
+set.seed(1701)
+alberta_split <- alberta_climate %>% 
+  select(-id, -x, -y, -elevation) %>% 
+  initial_split(strata = ecosys, prop = 3/4)
+
+alberta_train <- training(alberta_split)
+alberta_test  <- testing(alberta_split)
+
+set.seed(1702)
+alberta_val <- validation_split(alberta_train, strata = ecosys, prop = 4/5)
+alberta_val$splits[[1]]
+```
+
+## Exploring the data
+
+Let's check the correlation between the variables
+```{r}
+tmwr_cols <- colorRampPalette(c("#91CBD765", "#CA225E"))
+alberta_train %>% 
+  select(-ecosys) %>% 
+  cor() %>% 
+  corrplot(col = tmwr_cols(200), tl.col = "black")
+```
+
+Do we have missing values?
+```{r}
+vis_dat(alberta_train)
+```
+
+## Creating recipe
+
+This dataset contains predictors that are ratios. Given the nature of this
+variable, the distribution can be skewed and wreak the havoc on variance
+calculations. That's why is better to normalize (enforce a symmetric distribution)
+for the predictors
+
+```{r}
+alberta_recipe <- recipe(ecosys ~ ., 
+                         data = analysis(alberta_val$splits[[1]])) %>% 
+  update_role(ecosys,
+              new_role = "id") %>% 
+  step_zv(all_numeric_predictors()) %>%
+  step_orderNorm(all_numeric_predictors()) %>% 
+  step_normalize(all_predictors()) 
+```
+
+## Estimate model with the training data
+
+```{r}
+alberta_rec_trained <- prep(alberta_recipe)
+alberta_rec_trained
+```
+
+If we are facing errors we can use:
+
+ - `prep(verbose = TRUE)` this will show the errors in every step
+ - `prep(log_changes = TRUE)` will keep the logs for every step
+ 
+## Baking the recipe
+
+`bake()` is like `predict()`, so at this point we have just fit our model, now we
+need to predict.
+
+```{r}
+alberta_validation <- alberta_val$splits %>% 
+  pluck(1) %>% 
+  assessment()
+
+alberta_val_processed <- bake(alberta_rec_trained,
+                              new_data = alberta_validation)
+```
+
+## Feature extraction techniques
+
+We are going to create a function to plot the data in a scatter plot. After
+running the PCA, we will use this function.
+```{r}
+plot_validation_results <- function(recipe, 
+                                    dat = assessment(alberta_val$splits[[1]])) {
+  recipe %>%
+    # Estimate any additional steps
+    prep() %>%
+    # Process the data (the validation set by default)
+    bake(new_data = dat) %>%
+    # Create the scatterplot matrix
+    ggplot(aes(x = .panel_x, y = .panel_y, col = ecosys, fill = ecosys)) +
+    geom_point(alpha = 0.4, size = 0.5) +
+    geom_autodensity(alpha = .3) +
+    facet_matrix(vars(-ecosys), layer.diag = 2) + 
+    scale_color_viridis_d() + 
+    scale_fill_viridis_d()
+}
+```
+
+Now, we are going to add one more step to our recipe to check the variation of
+our variables and visualize it with our function:
+```{r}
+alberta_rec_trained %>%
+  step_pca(all_numeric_predictors(), num_comp = 4) %>%
+  plot_validation_results() + 
+  ggtitle("Principal Component Analysis")
+```
+
+We can observe that the first two principal components are good separating the 
+classes.
+
+Now, the PCA components of our data that explain most of the variation in the
+predictors are also the predictive of the classes. To get to know what features
+are driving each of the components we can do the following:
+```{r}
+alberta_rec_trained %>%
+  step_pca(all_numeric_predictors(), num_comp = 4) %>% 
+  prep() %>% 
+  plot_top_loadings(component_number <= 4, n = 5) + 
+  ggtitle("Principal Component Analysis")
+```
+
+### PCA with tidymodels without the split
+
+```{r}
 # Create recipe indicating the role of variables that are there to identify 
 # data points:
 alberta_recipe <- recipe(~ ., data = alberta_climate) %>% 
