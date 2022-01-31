@@ -1,0 +1,128 @@
+---
+title: "Discriminant analysis and MANOVA"
+author: "Ronny A. Hernández Mora"
+date: "26/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(janitor)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(MASS)
+library(candisc)
+# This library masks the select from dplyr!!!
+
+# Import data
+## csv with iris data is the same as the one loaded in R
+# iris <- read_csv("data/lab_4/iris.csv") %>% 
+#   clean_names()
+```
+
+## Discriminant analysis
+
+First, we are going to do a linear discriminant analysis
+
+```{r}
+iris_clean <- iris %>% 
+  clean_names()
+  
+lda_iris <- lda(species ~ ., data = iris_clean)
+```
+
+Now that we have the analysis, we can obtain the scores (the new coordinate
+position of points after the matrix rotation)
+
+```{r}
+scores_lda_iris <- predict(lda_iris, iris_clean)
+
+scores_data <- scores_lda_iris[["x"]] %>% 
+  as_tibble() %>% 
+  bind_cols(scores_lda_iris[["class"]]) %>% 
+  rename("class" = "...3")
+
+ggplot(scores_data, aes(x = LD1, y = LD2, color = class)) +
+  geom_point() +
+  scale_color_viridis_d() +
+  theme_light()
+
+# scores = predict(out1, iris)$x
+# plot(scores_lda_iris[,1:2], col=rainbow(3)[as.factor(iris_clean$species)],
+#      asp=1)
+```
+
+### Alternative with `candisc` package
+
+ - For the `lm()` function, we want to explain the numeric variables as a
+ function of species. To pass this formula to the function, we need to create
+ first a matrix with the numeric variables or do it with a `cbind` as shown
+ in the original lab code.
+```{r}
+numeric_variables <- iris_clean %>% 
+  dplyr::select(-species) %>% 
+  as.matrix()
+
+model <- lm(numeric_variables ~ species, data = iris_clean)
+
+## The formula before its not the same as:
+# lm(sepal_length + sepal_width + petal_length + petal_width ~ species,
+#    data = iris_clean)
+
+candisc_results <- candisc(model, term = "species")
+
+summary(candisc_results)
+
+candisc_results[["structure"]] # This are the loadings
+
+## Original R code lab
+# x = lm(cbind(sepal_length, sepal_width, petal_length, petal_width) ~ species,
+#      data = iris_clean)
+# out2 = candisc(x, term = "species")
+# summary(out2)
+# out2$structure
+# plot(out2, which = c(1, 2), scale = 8, var.col = "#777777", var.lwd = 1,
+#      col = rainbow(3))
+```
+
+### Classifying new observations
+
+Now, we are going to use new data to classify according to our model
+
+```{r}
+new_specimens <- read_csv("data/lab_4/iris_unknown.csv") %>% 
+  clean_names() %>% 
+  rename(sepal_length = sep_length,
+         sepal_width = sep_width,
+         petal_length = pet_length,
+         petal_width = pet_width)
+```
+
+
+```{r}
+# Create the model with the known data
+training <- lda(species ~ ., iris_clean)
+
+# Classify new data with 
+predict(training, new_specimens)$class
+
+# Let's check the confussion matrix
+prediction <- predict(training, iris_clean)$class
+confusionmatrix(iris_clean$species, prediction)
+
+## Original lab code
+# unknown = read.csv("iris_unknown.csv")
+# View(unknown)
+# out1 = lda(Species~., iris)
+# predict(out1, unknown)$class
+# pred1 = predict(out1, iris)$class
+# library(biotools)
+# confusionmatrix(iris$Species, pred1)
+```
+
+
+
+
+
+

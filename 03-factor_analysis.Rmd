@@ -1,0 +1,158 @@
+---
+title: "03-factor_analysis"
+author: "Ronny A. Hernández Mora"
+date: "19/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(glue)
+```
+
+ - A factor analysis maximizes the concordance of eigenvectors with
+ components (called factors)
+ - Factors can be though as the underlying mechanisms that cause the relations
+ between the variables we measure.
+
+## Import data
+
+ - Data for the lab is in this [link]("http://tinyurl.com/mv690/lab/2B/data")
+ 
+```{r}
+## Original lab code
+# dat2 = read.csv("USArrests2.csv")
+# View(dat2)
+# row.names(dat2)=dat2$State
+# dat2 = dat2[,-1]
+# View(dat2)
+
+## Tidyverse style
+usa_arrests <- read_csv("data/lab_3/USArrests2.csv") %>% 
+  clean_names()
+
+glimpse(usa_arrests)
+```
+
+## PCA
+
+ - Build a PCA and check variance explained
+```{r}
+## Original lab code
+# biplot(pca_1)
+# out2 = princomp(dat2, cor=T)
+# biplot(out2)
+
+## Tidyverse style
+pca_1 <- usa_arrests %>% 
+  select(-state) %>% 
+  princomp(cor = T)
+
+summary(pca_1)
+```
+
+ - If we calculate the variance explained through the Eigenvalues, we will
+ be able to create a **scree plot**.
+ - A scree plot allows us to check how many components we should look at it.
+```{r}
+## Original lab code
+# summary(out2)
+# varexpl = eigen(cor(dat2))$values / ncol(dat2)
+# varexpl
+# plot(varexpl, type="o")
+
+## Tidyverse style
+usa_arrests_pca <- usa_arrests %>% 
+  select(-state)
+
+var_explained <- eigen(cor(usa_arrests_pca))$values / ncol(usa_arrests_pca)
+
+glue("The manually calculate variance for {names(usa_arrests_pca)} is: {var_explained}")
+```
+
+ - Now that we have calculated the variance explained, we can create the
+ scree_plot
+```{r}
+## Original lab code
+plot(var_explained, type = "o")
+
+## With ggplot
+
+```
+
+## Factor analysis
+
+```{r}
+factor_analysis <- factanal(usa_arrests_pca, factors = 2,
+                            rotation = "varimax",
+                            scores = "regression")
+
+
+# out3 = factanal(dat2, factors=2, rotation="varimax",
+#                 scores="regression")
+```
+
+```{r}
+plot(factor_analysis$score[ , 1:2], asp = 1, type = "n")
+text(factor_analysis$score[ , 1:2], row.names(usa_arrests_pca))
+
+library(vegan)
+
+vec1=envfit(factor_analysis$score[,1:2],
+            usa_arrests_pca,
+            permutations = 0)
+
+plot(vec1, col = "red")
+
+factor_analysis$loadings
+print(out3, cutoff=0.4)
+```
+
+ - What is SS loadings?
+ 
+```{r}
+var_explained
+```
+
+```{r}
+factor_analysis$uniquenesses
+factor_analysis$correlation
+```
+
+### Principal components or factors as linear combinations
+
+```{r}
+factor_scores <- factor_analysis$scores
+
+# fas = out3$scores
+# View(fas)# Factor analysis scores
+# View(dat2) # Original variables
+```
+
+
+```{r}
+fac_1_lm = lm(factor_scores[, 1] ~ murder + assault +
+                rape + urban_pop + income, usa_arrests_pca)
+summary(fac_1_lm)
+
+fac_2_lm = lm(factor_scores[, 2] ~ murder + assault +
+                rape + urban_pop + income, usa_arrests_pca)
+summary(fac_2_lm)
+```
+
+**Use model to predict new values**
+
+```{r}
+new_data_arrests <- read_csv("data/lab_3/USArrests2_2020.csv") %>% 
+  clean_names()
+
+fac_1_prediction = predict(fac_1_lm, new_data_arrests)
+
+fac_2_prediction = predict(fac_2_lm, new_data_arrests)
+
+```
+

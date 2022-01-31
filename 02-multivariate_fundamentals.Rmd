@@ -182,7 +182,7 @@ plot(alberta_pca_fit, col = "black")
 alberta_pca_fit <-  envfit(alberta_pca$score[ , 1:2],
                          alberta_climate[ , c(7, 9, 18)], permutations = 0)
 plot.new()
-plot(alberta_pca_fit)
+plot(alberta_pca_fit, asp = 1)
 
 # Now plot this with the map
 alberta_pca$loadings[,1:3]
