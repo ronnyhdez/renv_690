@@ -13,8 +13,8 @@ library(readr)
 library(ggplot2)
 library(MASS)
 library(candisc)
-library(biotools)
-# This library masks the select from dplyr!!!
+library(biotools)# This library masks the select from dplyr!!!
+library(vegan)
 
 # Import data
 ## csv with iris data is the same as the one loaded in R
@@ -22,7 +22,7 @@ library(biotools)
 #   clean_names()
 ```
 
-## Discriminant analysis
+## 4.1 Discriminant analysis
 
 First, we are going to do a linear discriminant analysis
 
@@ -87,7 +87,7 @@ candisc_results[["structure"]] # This are the loadings
 #      col = rainbow(3))
 ```
 
-### Classifying new observations
+## 4.2 Classifying new observations
 
 Now, we are going to use new data to classify according to our model
 
@@ -121,6 +121,154 @@ confusionmatrix(iris_clean$species, prediction)
 # library(biotools)
 # confusionmatrix(iris$Species, pred1)
 ```
+
+We are going to add the new observation to our plot:
+
+```{r}
+scores <- predict(training, iris_clean)$x
+
+plot(scores[ , 1:2], asp = 1, col = rainbow(3)[as.factor(iris_clean$species)])
+
+scores_unknown <- predict(training, new_specimens)$x
+
+points(scores_unknown[, 1:2], pch = 19)
+
+vectors <- envfit(scores[ , 1:2], iris_clean[ , 1:4], permutations = 0)
+
+plot(vectors, col = "black")
+
+## Original lab code
+# scores = predict(out1, iris)$x
+# plot(scores[,1:2], asp=1,col=rainbow(3)[as.factor(iris$Species)])
+# scores_unknown = predict(out1, unknown)$x
+# points(scores_unknown[,1:2], pch=19)
+# library(vegan)
+# vectors = envfit(scores[,1:2], iris[,1:4], permutations=0)
+# plot(vectors, col="black")
+```
+
+
+## 4.3 Testing for significant differences among groups
+
+MANOVA is mathematically equal to a discriminant analysis, but
+is used when we have a different question: Do we really have
+different species?
+
+```{r}
+species <- iris_clean %>% 
+  dplyr::select(species) %>% 
+  as.matrix()
+
+measurements <- iris_clean %>% 
+  dplyr::select(-species) %>% 
+  as.matrix()
+
+manova_model <- manova(measurements ~ species)
+
+summary(manova_model, test = "Wilks")
+
+summary.aov(manova_model)
+
+## Original lab code
+# species = as.matrix(iris[,5])
+# measurements = as.matrix(iris[,1:4])
+# out3 = manova(measurements~species)
+# summary(out3, test="Wilks")# MANOVA table of Wilks' lambda
+# summary.aov(out3)# Univariate ANOVA tables
+```
+
+Assumptions of MANOVA are the same as ANOVA: homocedasticity and
+normal variance distribution:
+
+```{r}
+boxplot(iris_clean$sepal_length ~ iris_clean$species)
+plot(residuals(lm(sepal_length ~ species, data = iris_clean)))
+
+## Original lab code
+# boxplot(iris$SepLength~iris$Species)
+# plot(residuals(lm(SepLength~Species, data=iris)))
+```
+
+## 4.4 Discriminant analysis – climate change projections
+
+For this exercise, the Alberta climate dataset is going to be used given that
+it has a the `ecosys` variable which is going to be our predetermined class
+variable.
+
+In this exercise we are going to make ecosystem predictions for a new set of
+observations: climate change predictions for the 2020's, 2050's, and 2080's
+from the Canadian atmosphere-ocean coupled general circulation model CGCM2-B2
+
+```{r}
+ab_climate <- read_csv("data/lab_4/AB_Climate.csv") %>% 
+  clean_names()
+
+# Data with ecosystems and colors assginated 
+ab_ecosystems <- read_csv("data/lab_4/AB_Ecosystems.csv") %>% 
+  clean_names()
+
+plot(y~x, data = ab_climate, pch = 21, asp = 1,
+     col = ab_ecosystems$ecol[as.factor(ecosys)])
+
+# ggplot(data = ab_climate, aes(x = x, y = y, fill = ecosys)) +
+#   geom_point() +
+#   scale_fill_viridis_d()
+
+## Original lab code
+# ab6190=read.csv("AB_Climate.csv")
+# head(ab6190)
+# attach(ab6190)
+# ecosys=read.csv("AB_Ecosystems.csv")
+# head(ecosys)
+# ecol=as.character(ecosys$ECOL)
+# ename=ecosys$ENAME
+# plot(Y~X, pch=21, asp=1, col=ecol[as.factor(ECOSYS)])
+```
+
+Now that we have plotted the data, we can continue to build our model:
+
+<!-- #TODO: Why is there a prediction with the same data used to build the model? -->
+```{r}
+ab_lda_climate <- lda(ecosys ~ mat + mwmt + mcmt + msp + ahm, 
+                      data = ab_climate)
+
+pred_ab_lda_climate <- predict(ab_lda_climate, ab_climate)$class
+
+
+plot(y~x, data = ab_climate, pch = 21, asp = 1,
+     col = ab_ecosystems$ecol[pred_ab_lda_climate])
+
+## Original lab code
+# library(MASS)
+# out1=lda(ECOSYS~MAT+MWMT+MCMT+MAP+MSP+AHM, ab6190)
+# pred6190=predict(out1, ab6190)$class
+# plot(Y~X, pch=21, asp=1, col=ecol[pred6190])
+```
+
+Now that we built our model, we can continue and make some predictions for the
+year 2020
+
+```{r}
+ab_climate_2020 <- read_csv("data/lab_4/AB_Climate_2020s.csv") %>% 
+  clean_names()
+
+pred_20 <- predict(ab_lda_climate, ab_climate_2020)$class
+
+plot(y ~ x, data = ab_climate, pch = 21, asp = 1, col = ecol[pred_20])
+
+## Original lab code
+# ab2020 = read.csv("AB_Climate_2020s.csv")
+# pred2020 = predict(out1, ab2020)$class
+# plot(Y~X, pch=21, asp=1, col=ecol[pred2020])
+```
+
+
+
+
+
+
+
+
 
 
 
